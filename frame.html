@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Rockin'1000 frame</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: 'Outfit', sans-serif;
+      text-transform: uppercase;
+    }
+
+    #image-upload {
+      display: none;
+    }
+
+    #container {
+      position: relative;
+    }
+
+    #frame {
+      width: 400px;
+      height: 400px;
+      position: relative;
+      border-width: 50px;
+      border-style: solid;
+      border-color: black;
+      border-radius: 50%;
+      overflow: hidden;
+    }
+
+    #frame img {
+      display: block;
+      border-radius: 50%;
+      height: 100%;
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .r1000-text {
+      position: absolute;
+      left: 190px;
+      z-index: 10;
+      font-weight: bold;
+      font-size: 32px;
+      color: #FFFFFF;
+    }
+
+    .r1000-text span span {
+      height: 190px;
+      position: absolute;
+      /* width: 20px; */
+      left: 0px;
+      top: 10px;
+      transform-origin: bottom center;
+      text-align: center;
+      line-height: 32px;
+    }
+
+    #lower-text span span div {
+      transform: scale(-1);
+    }
+
+    #lower-text span span.star div {
+      transform: none;
+    }
+
+    /* .star {
+      height: 193px !important;
+      top: 7px !important;
+    }
+    .star div {
+      line-height: 20px;
+      vertical-align: middle;
+    } */
+
+    input[type="text"] {
+      width: 400px;
+      text-align: center;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+  <h1 class="p-3">Rockin'1000 frame</h1>
+  <div id="container">
+    <div id="upper-text" class="r1000-text">
+      <span></span>
+    </div>
+    <div id="lower-text" class="r1000-text">
+      <span></span>
+    </div>
+    <div id="frame">
+      <img id="preview-image" src="#"/>
+    </div>
+  </div>
+  <label id="handler" for="image-upload" class="btn btn-outline-dark mt-3">Carica immagine</label>
+  <input type="file" id="image-upload" accept="image/*" />
+
+
+  <div id="params" class="p-4 d-flex flex-column">
+    <input type="text" id="upper-text-input" placeholder="top text" value="★ ★ ONE OF THE THOUSAND ★ ★" class="mt-3" />
+    <input type="text" id="lower-text-input" placeholder="lower text" value="||| ★ ★ ★ ROCKIN'1000 ★ ★ ★ |||" class="mt-3" />
+    <div class="d-flex justify-content-center mt-3">
+      <label for="frame-color">Frame</label>
+      <input type="color" id="frame-color" name="frame-color" value="#000000" class="mx-3">
+      <label for="text-color">Text</label>
+      <input type="color" id="text-color" name="text-color" value="#ffffff" class="mx-3">
+    </div>
+    <label for="upper-arc" class="p-3">upper arc (<span></span>°)</label>
+    <input type="range" id="upper-arc" name="upper-arc" min="0" max="360" value="180">
+    <label for="lower-arc" class="p-3">lower arc (<span></span>°)</label>
+    <input type="range" id="lower-arc" name="lower-arc" min="0" max="360" value="162">
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lettering.js/0.7.0/jquery.lettering.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.2/html2canvas.min.js"></script>
+  
+  <script>
+    function getLetterWidth(letter) {
+      return Math.max(10, letter.width()) + 4;
+    }
+
+    function applyToArc(line = 'upper') {
+      let totalWidth = 0;
+      $(`#${line}-text span span`).each((i,e) => {
+        totalWidth += i ? getLetterWidth($(e)) : 0;
+      });
+
+      let n = $(`#${line}-text span span`).length - 1,
+          arc = $(`#${line}-arc`).val(),
+          // frameWidth = $('#frame').width(),
+          // radius = frameWidth / 2,
+          // arcLength = (arc / 360) * 2 * Math.PI * radius,
+          // inc = (arc / n),
+          start = line == 'upper' ? (-(arc / 2)) : (270 - (90 - arc / 2)),
+          currentAngle = start,
+          direction = (line == 'upper' ? 1 : -1),
+          prevChar = null;
+
+      $(`#${line}-text span span`).each((i,e) => {
+        let $this = $(e),
+            $parent = $this.parent(),
+            width = getLetterWidth($this);
+            // inc = (width * (arcLength / totalWidth)) / (2 * Math.PI * radius) * 360;
+            inc = (arc / totalWidth) * width;
+            // angle = start + (inc * (line == 'upper' ? 1 : -1)) * i;
+
+        $this.html(`<div>${$this.text()}</div>`);
+
+        if ($this.text() == '★') {
+          $this.addClass('star');
+        }
+        
+        let offset = 0
+        if (/[i1' ]/i.test($this.text())) {
+          offset = -2;
+        } else if (/[o]/i.test($this.text())) {
+          offset = 1;
+        }
+
+        $this.css({
+          width: width + "px",
+          left: ((-0.5 * width) + 10) + "px",
+          // transform: `rotate(${angle}deg)`
+          transform: `rotate(${currentAngle + direction*offset}deg)`
+        });
+
+        $this.attr('data-angle-inc', inc);
+
+        currentAngle += direction * inc;
+        prevChar = $this;
+      });
+    };
+
+    $(document).ready(function() {
+      const imageUpload = document.getElementById('image-upload');
+      const previewImage = document.getElementById('preview-image');
+      const customText = document.getElementById('params');
+
+      imageUpload.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+          previewImage.src = e.target.result;
+        };
+
+        reader.readAsDataURL(file);
+      });
+
+      $('#frame-color').on('change', function(e) {
+        $(`#frame`).css('border-color', $(this).val());
+      });
+      $('#text-color').on('change', function(e) {
+        $(`.r1000-text`).css('color', $(this).val());
+      });
+
+      $('#upper-arc, #lower-arc').on('input', function(e) {
+        const $this = $(this);
+        const id = $this.attr('id');
+        const value = $this.val();
+
+        $(`[for="${id}"] span`).text(value);
+      });
+
+      $('#upper-arc, #lower-arc').trigger('input');
+
+      $('#params input').on('keyup change', function(e) {
+        const $this = $(this);
+        const id = $this.attr('id');
+        const value = $this.val();
+
+        $(`#${id.replace('-input', '')}`).html(`<span>${value}</span>`);
+        $('.r1000-text span').lettering();
+        
+        applyToArc('upper');
+        applyToArc('lower');
+      });
+
+      $('#params input').keyup();
+    });
+
+    function saveAsImage() {
+      const container = document.getElementById('container');
+      const frame = document.getElementById('frame');
+      const width = frame.offsetWidth;
+      const height = frame.offsetHeight;
+
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+
+      const context = canvas.getContext('2d');
+
+      // Disegna il contenuto del container sul canvas
+      context.drawImage(container, 0, 0, width, height);
+
+      // Crea un elemento <a> per il download
+      const link = document.createElement('a');
+      link.href = canvas.toDataURL('image/png');
+      link.download = 'rockin1000_frame.png';
+
+      // Simula il clic sul link per avviare il download
+      link.click();
+    }
+
+  </script>
+</body>
+</html>
+
