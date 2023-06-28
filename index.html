@@ -184,7 +184,7 @@
         }
         
         let offset = 0
-        if (/[i1' ]/i.test($this.text())) {
+        if (/[i1' \.]/i.test($this.text())) {
           offset = -2;
         } else if (/[o]/i.test($this.text())) {
           offset = 1;
