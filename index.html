@@ -100,6 +100,7 @@
     .btn {
       display: flex;
       align-items: center;
+      text-transform: uppercase;
     }
     .btn .material-symbols-outlined {
       margin-right: 5px;
@@ -236,7 +237,7 @@
         var a = document.createElement('a');
         // toDataURL defaults to png, so we need to request a jpeg, then convert for file download.
         a.href = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
-        a.download = 'somefilename.png';
+        a.download = 'r1K4romagna-profile.png';
         a.click();
       });
     }
