@@ -109,7 +109,7 @@
   </style>
 </head>
 <body>
-  <h1 class="p-3">Rockin'1000 frame</h1>
+  <h1 class="p-3">Unofficial Rockin'1000 frame</h1>
   <div id="container">
     <!-- <div id="upper-text" class="r1000-text">
       <span></span>
@@ -122,16 +122,22 @@
       <img id="preview-image" src="#"/>
     </div>
   </div>
-  <label id="handler" for="image-upload">
-    <div class="btn btn-outline-dark mt-3">
-      <span class="material-symbols-outlined">folder_open</span><span>Load image</span>
-    </div>
-  </label>
-  <input type="file" id="image-upload" accept="image/*" />
 
-  <button class="btn btn-outline-dark mt-3" onclick="exportAsPNG()">
-    <span class="material-symbols-outlined">save_alt</span><span>Save result</span>
+  <div class="pt-3">Cut your image in square format before upload it</div>
+  <div class="pt-3">If you can't save the resulting image, try to copy the link and open it in you browser</div>
 
+  <div class="d-flex">
+    <label id="handler" for="image-upload">
+      <div class="btn btn-outline-dark m-3">
+        <span class="material-symbols-outlined">folder_open</span><span>Load image</span>
+      </div>
+    </label>
+    <input type="file" id="image-upload" accept="image/*" />
+  
+    <button class="btn btn-outline-dark m-3" onclick="exportAsPNG()">
+      <span class="material-symbols-outlined">save_alt</span><span>Save result</span>
+    </button>
+  </div>
 
   <!-- <div id="params" class="p-4 d-flex flex-column">
     <input type="text" id="upper-text-input" placeholder="top text" value="★ ★ ONE OF THE THOUSAND ★ ★" class="mt-3" />
